@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Rust Test</title>
+    <link rel="stylesheet" href="/rustproject/index.css">
+</head>
+<body>
+    <h1>Rust Projesi Testi</h1>
+    <div class="cont">
+        <div class="cont2 buttons">
+            <div id="orgin">ilk hali</div>
+            <div id="zoom">zoomlanmış</div>
+            <div id="nokta">noktasal zoom</div>
+        </div>
+        <div class="cont2 resim">
+            <img src="/rustproject/resim/1.png" id="img1"></img>
+            <img src="/rustproject/resim/3.png" id="img2"></img>
+        </div>
+    </div>
+
+    <p id="mesaj">Yükleniyor...</p>
+
+
+    <script type="module">
+        import init, { selam_ver } from './pkg/rustproject.js';
+
+        async function baslat() {
+            await init();
+            document.getElementById("mesaj").innerText = selam_ver();
+        }
+
+        baslat();
+    </script>
+    <script src="/rustproject/index.js"></script>
+</body>
+</html>
