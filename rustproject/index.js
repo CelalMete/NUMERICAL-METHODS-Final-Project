@@ -1,20 +1,24 @@
 document.addEventListener("DOMContentLoaded", () => {
    const img1=document.getElementById('img1')
-   const img2=document.getElementById('img2')
    const btn1=document.getElementById('orgin')
    const btn2=document.getElementById('zoom')
    const btn3=document.getElementById('nokta')
-   img1.style.display='block';
-   img2.style.display='none';
+   const ctx = img1.getContext('2d')
+   img1.width=800;
+   img1.heigh=500;
+   const image1=new Image();
+   image1.src='/rustproject/resim/1.png';
    btn1.addEventListener('click',()=>{
-   img1.style.display='block';
-   img2.style.display='none';
+      ctx.drawImage(image1,0,0,img1.width,img1.heigh);
    })
    btn2.addEventListener('click',()=>{
-   img1.style.display='none';
-   img2.style.display='block';
+  
    })
    btn3.addEventListener('click',()=>{
-      
    })
+
+
+
+
+
 })
