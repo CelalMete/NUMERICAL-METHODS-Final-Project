@@ -9,9 +9,20 @@ document.addEventListener("DOMContentLoaded", () => {
    img1.heigh=500;
    const image1=new Image();
    image1.src='/rustproject/resim/1.png';
-    ctx.drawImage(image1,0,0,img1.width,img1.heigh);
+   // ctx.drawImage(image1,0,0,img1.width,img1.heigh);
    const scanned =ctx.getImageData(0,0,img1.width,img1.heigh);
-     const sonucPixels = resmi_olcekle(scanned, img1.width, img1.height,img1.widht*2,  img1.height*2);
+   const scannedData=scanned.data;
+   for(let i=0;i<scannedData.length;i+=4){
+      const total=scannedData[i]+scannedData[i+1]+scannedData[i+2];
+      const avgColorValue=total/3;
+      scannedData[i]=avgColorValue;
+      scannedData[i+1]=avgColorValue;
+      scannedData[i+2]=avgColorValue;
+
+   }
+   scanned.data=scannedData;
+   ctx.putImageData(scanned,0,0);
+   //  const sonucPixels = resmi_olcekle(scanned, img1.width, img1.height,img1.widht*2,  img1.height*2);
    btn1.addEventListener('click',()=>{
      
    })
