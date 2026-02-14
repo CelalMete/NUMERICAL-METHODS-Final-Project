@@ -44,8 +44,7 @@ pub fn resmi_olcekle(
             sonuc.push(255);  
                 }
         }
-        
-        
+         
     }else{
         let x_ks=w as f32/nw as f32;
         let y_ks= h as f32/nh as f32;

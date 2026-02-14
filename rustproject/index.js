@@ -9,10 +9,10 @@ document.addEventListener("DOMContentLoaded", () => {
         const btn4 = document.getElementById('buyuk');
         const btn3 = document.getElementById('nokta');
         const ctx = canvas.getContext('2d');
-        canvas.width = 400;//genişlik pixel sayisi  1 pixel 4 sayı 
-        canvas.height = 200;//yükseklik pixel sayısı
+        canvas.width = 670;//genişlik pixel sayisi  1 pixel 4 sayı 
+        canvas.height = 500;//yükseklik pixel sayısı
         const image1 = new Image();
-        image1.src = '/rustproject/resim/1.png';
+        image1.src = '/rustproject/resim/1.jpeg';
         
 
         image1.onload = () => {
