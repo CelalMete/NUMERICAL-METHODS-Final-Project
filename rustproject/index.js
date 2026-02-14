@@ -9,8 +9,8 @@ document.addEventListener("DOMContentLoaded", () => {
         const btn4 = document.getElementById('buyuk');
         const btn3 = document.getElementById('nokta');
         const ctx = canvas.getContext('2d');
-        canvas.width = 600;//genişlik pixel sayisi  1 pixel 4 sayı 
-        canvas.height = 400;//yükseklik pixel sayısı
+        canvas.width = 400;//genişlik pixel sayisi  1 pixel 4 sayı 
+        canvas.height = 200;//yükseklik pixel sayısı
         const image1 = new Image();
         image1.src = '/rustproject/resim/1.png';
         
@@ -24,6 +24,7 @@ document.addEventListener("DOMContentLoaded", () => {
             btn1.addEventListener('click', () => {
                 btn = 1;
                 console.log(btn+"siyahbeyaz")
+                document.getElementById('cont2').style.width='100%'
                 sonucPixels = resmi_olcekle(hamVeri, btn, canvas.width, canvas.height, canvas.width, canvas.height);
                  console.log(sonucPixels.length)
                 resmi_guncelle(ctx, canvas, sonucPixels, canvas.width, canvas.height);
@@ -42,7 +43,7 @@ document.addEventListener("DOMContentLoaded", () => {
             });
             btn4.addEventListener('click', () => {
                 btn = 3;
-               
+               console.log(hamVeri)
                 sonucPixels = resmi_olcekle(hamVeri, btn, canvas.width, canvas.height, canvas.width*2, canvas.height*2);
                 console.log(sonucPixels.length)
                 resmi_guncelle(ctx, canvas, sonucPixels, canvas.width*2, canvas.height*2);
@@ -57,6 +58,9 @@ document.addEventListener("DOMContentLoaded", () => {
         genislik,
         yukseklik
     );
+    console.log(canvas.width)
+    console.log(canvas.height)
+    console.log(pixelData)
     ctx.putImageData(yeniImageData, 0, 0);
 }
     baslat();
