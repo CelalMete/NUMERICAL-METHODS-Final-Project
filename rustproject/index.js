@@ -1,34 +1,63 @@
+import init, { resmi_olcekle } from './pkg/rustproject.js';
 
 document.addEventListener("DOMContentLoaded", () => {
-   const img1=document.getElementById('img1')
-   const btn1=document.getElementById('orgin')
-   const btn2=document.getElementById('zoom')
-   const btn3=document.getElementById('nokta')
-   const ctx = img1.getContext('2d')
-   img1.width=800;
-   img1.heigh=500;
-   const image1=new Image();
-   image1.src='/rustproject/resim/1.png';
-   // ctx.drawImage(image1,0,0,img1.width,img1.heigh);
-   const scanned =ctx.getImageData(0,0,img1.width,img1.heigh);
-   const scannedData=scanned.data;
-   for(let i=0;i<scannedData.length;i+=4){
-      const total=scannedData[i]+scannedData[i+1]+scannedData[i+2];
-      const avgColorValue=total/3;
-      scannedData[i]=avgColorValue;
-      scannedData[i+1]=avgColorValue;
-      scannedData[i+2]=avgColorValue;
+    async function baslat() {
+        await init();
+        const canvas = document.getElementById('img1'); 
+        const btn1 = document.getElementById('orgin');
+        const btn2 = document.getElementById('zoom');
+        const btn4 = document.getElementById('buyuk');
+        const btn3 = document.getElementById('nokta');
+        const ctx = canvas.getContext('2d');
+        canvas.width = 600;//genişlik pixel sayisi  1 pixel 4 sayı 
+        canvas.height = 400;//yükseklik pixel sayısı
+        const image1 = new Image();
+        image1.src = '/rustproject/resim/1.png';
+        
 
-   }
-   scanned.data=scannedData;
-   ctx.putImageData(scanned,0,0);
-   //  const sonucPixels = resmi_olcekle(scanned, img1.width, img1.height,img1.widht*2,  img1.height*2);
-   btn1.addEventListener('click',()=>{
-     
-   })
-   btn2.addEventListener('click',()=>{
-  
-   })
-   btn3.addEventListener('click',()=>{
-   })
-})
+        image1.onload = () => {
+            ctx.drawImage(image1, 0, 0, canvas.width, canvas.height);
+            const scanned = ctx.getImageData(0, 0, canvas.width, canvas.height);
+            const hamVeri = scanned.data; 
+            let sonucPixels; 
+            let btn = 0;
+            btn1.addEventListener('click', () => {
+                btn = 1;
+                console.log(btn+"siyahbeyaz")
+                sonucPixels = resmi_olcekle(hamVeri, btn, canvas.width, canvas.height, canvas.width, canvas.height);
+                 console.log(sonucPixels.length)
+                resmi_guncelle(ctx, canvas, sonucPixels, canvas.width, canvas.height);
+            });
+            btn2.addEventListener('click', () => {
+                btn = 2;
+                console.log(btn+"anti")
+                sonucPixels = resmi_olcekle(hamVeri, btn, canvas.width, canvas.height, canvas.width, canvas.height);
+                resmi_guncelle(ctx, canvas, sonucPixels, canvas.width, canvas.height);
+            });
+            btn3.addEventListener('click', () => {
+                btn = 3;
+                sonucPixels = resmi_olcekle(hamVeri, btn, canvas.width, canvas.height, canvas.width, canvas.height);
+                
+                resmi_guncelle(ctx, canvas, sonucPixels, canvas.width, canvas.height);
+            });
+            btn4.addEventListener('click', () => {
+                btn = 3;
+               
+                sonucPixels = resmi_olcekle(hamVeri, btn, canvas.width, canvas.height, canvas.width*2, canvas.height*2);
+                console.log(sonucPixels.length)
+                resmi_guncelle(ctx, canvas, sonucPixels, canvas.width*2, canvas.height*2);
+            });
+        };
+    }
+    function resmi_guncelle(ctx, canvas, pixelData, genislik, yukseklik) {
+    canvas.width = genislik;
+    canvas.height = yukseklik;
+    const yeniImageData = new ImageData(
+        new Uint8ClampedArray(pixelData), 
+        genislik,
+        yukseklik
+    );
+    ctx.putImageData(yeniImageData, 0, 0);
+}
+    baslat();
+});

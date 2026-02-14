@@ -9,9 +9,10 @@
     <h1>Rust Projesi Testi</h1>
     <div class="cont">
         <div class="cont2 buttons">
-            <div id="orgin">ilk hali</div>
-            <div id="zoom">zoomlanmış</div>
-            <div id="nokta">noktasal zoom</div>
+            <div id="orgin">siyah beyaz</div>
+            <div id="zoom">negatif</div>
+            <div id="buyuk">büyük</div>
+            <div id="nokta">orjinal</div>
         </div>
         <canvas class="cont2 resim" id="img1"></canvas>
         </div>
@@ -19,17 +20,6 @@
 
     <p id="mesaj">Yükleniyor...</p>
 
-
-    <script type="module">
-        import init, { selam_ver } from './pkg/rustproject.js';
-
-        async function baslat() {
-            await init();
-            
-        }
-
-        baslat();
-    </script>
-    <script src="/rustproject/index.js"></script>
+    <script type="module" src="/rustproject/index.js"></script>
 </body>
 </html>
