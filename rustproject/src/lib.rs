@@ -45,23 +45,56 @@ pub fn resmi_olcekle(
             }
         }
          
-    }else{
-        let x_ks=w as f32/nw as f32;//  1/2kat
-        let y_ks= h as f32/nh as f32;//   1/2kat
-        for y in 0..nh{
-            for x in 0..nw{
-                let orgx=(x as f32*x_ks).floor() as u32;//pixellerin caldıkları x konumu falan
-                let orgy=(y as f32*y_ks).floor() as u32;//pixellerin caldıkları y konumu falan
-            let index =((orgy*w+orgx)*4) as usize;//duz index 
-            let index_tl =(y*w+x)as usize;
-            let index_tr=index_tl+4 ;
-            let index_bl=index_tl + (w * 4) as usize;
-            let index_br=index_bl+4;
+    }else{let x_ks = w as f32 / nw as f32;
+        let y_ks = h as f32 / nh as f32;
 
+        for y in 0..nh {
+            for x in 0..nw {
+                
+                // Orijinal resimdeki koordinatı bul
+                let orgx = (x as f32 * x_ks).floor() as u32;
+                let orgy = (y as f32 * y_ks).floor() as u32;
+                
+                // İndex hesapla
+                let index = ((orgy * w + orgx) * 4) as usize;
+
+                // --- DÜZELTİLEN KISIM BURASI ---
+                
+                let mut nr;
+                let mut ng;
+                let mut nb;
+                let mut na;
+
+                // GÜVENLİK KONTROLÜ: 
+                // 1. Dizi sınırını aşıyor muyuz? (index + 7 < data.len())
+                // 2. Sağ kenarda mıyız? (orgx < w - 1)
+                // Eğer sağ kenardaysak, yan komşu (index+4) yoktur!
+                
+                let sagda_komsu_var_mi = (orgx < w - 1) && (index + 7 < data.len());
+
+                // Senin mantığın: Eğer x çift sayıysa kopyala, tek sayıysa ortalama al.
+                // Ama eğer sağda komşu yoksa, mecburen kopyalamak zorundayız.
+                if orgx == x * 2 || !sagda_komsu_var_mi {
+                    // Düz Kopyala (Ya çift piksel ya da kenardayız)
+                    nr = data[index] as u16;
+                    ng = data[index + 1] as u16;
+                    nb = data[index + 2] as u16;
+                    na = data[index + 3] as u16;
+                } else {
+                    // Karıştır (Interpolation) - Sadece güvenliyse buraya girer
+                    nr = (data[index] as u16 + data[index + 4] as u16) / 2;
+                    ng = (data[index + 1] as u16 + data[index + 5] as u16) / 2;
+                    nb = (data[index + 2] as u16 + data[index + 6] as u16) / 2;
+                    na = (data[index + 3] as u16 + data[index + 7] as u16) / 2;
+                }
+
+                // Push işlemleri
+                sonuc.push(nr as u8);
+                sonuc.push(ng as u8);
+                sonuc.push(nb as u8);
+                sonuc.push(na as u8);
             }
-        }
-    }
-
+        }}
 
     return sonuc;
 }
