@@ -6,3 +6,5 @@ justify-self: center;}
 .buttons div{height: 30px;margin: 5px 10px 5px 10px;display: flex; align-items: center;
    text-align: center;padding: 3px 10px 3px 10px; border: 1px solid #ccc;border-radius: 8px;}
 .resim{   border: 1px solid #ccc ;}
+#buyutecCanvas{position: absolute; top: 800px; pointer-events: none;
+   height: 50px;width: 50px;border: 1px solid #ccc;}
