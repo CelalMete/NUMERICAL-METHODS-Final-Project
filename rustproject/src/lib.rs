@@ -45,7 +45,8 @@ pub fn resmi_olcekle(
             }
         }
          
-    }else{let x_ks = w as f32 / nw as f32;
+    }else{
+        let x_ks = w as f32 / nw as f32;
         let y_ks = h as f32 / nh as f32;
 
         for y in 0..nh {
@@ -53,16 +54,17 @@ pub fn resmi_olcekle(
                 let orgx = (x as f32 * x_ks).floor() as u32;
                 let orgy = (y as f32 * y_ks).floor() as u32;
                 let index = ((orgy * w + orgx) * 4) as usize;
-                let mut nr;
-                let mut ng;
-                let mut nb;
-                let mut na;
+                let nr;
+                let ng;
+                let nb;
+                let na;
                 let sagda_komsu_var_mi = (orgx < w - 1) && (index + 7 < data.len());
                 if orgx == x * 2 || !sagda_komsu_var_mi {
                     nr = data[index] as u16;
                     ng = data[index + 1] as u16;
                     nb = data[index + 2] as u16;
                     na = data[index + 3] as u16;
+                     
                 } else {
                     nr = (data[index] as u16 + data[index + 4] as u16) / 2;
                     ng = (data[index + 1] as u16 + data[index + 5] as u16) / 2;
@@ -75,6 +77,7 @@ pub fn resmi_olcekle(
                 sonuc.push(na as u8);
             }
         }
+        
     }
 
     return sonuc;
