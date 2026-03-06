@@ -132,16 +132,31 @@ pub fn kenarlari_bul(data: &[u8], w: usize, h: usize) -> Vec<u8>{
                 }
             }
             
-            let g = (gx * gx + gy * gy).sqrt(); //hipotemus
+            let g = (gx * gx + gy * gy).sqrt(); //hipotemus falan filan
             g_degerleri[y * w + x] = g; 
         }
     }
-    
+   
+    let mut b=0.0;
+   let mut arr = [0u32; 256]; 
+    for i in 0..g_degerleri.len() {
+        let mut g = g_degerleri[i];
+          if g > 255.0 {
+            g = 255.0;
+        }
+        b += g_degerleri[i];
+        let a = g as usize;
+        arr[a] += 1; 
+    }
+    let sayi=g_degerleri.len() as f32;
+    let ort=b/sayi;
+
+
   let mut gorsel_px=Vec::with_capacity(w * h *4);
     for &g in g_degerleri.iter() {
         
         
-        let renk = if g > 255.0 { 255 } else { g as u8 };
+        let renk = if g > ort { 0 } else { 255 };
         
         gorsel_px.push(renk); // Kırmızı
         gorsel_px.push(renk); // Yeşil
