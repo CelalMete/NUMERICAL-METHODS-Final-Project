@@ -2,16 +2,30 @@ use std::usize;
 
 use wasm_bindgen::prelude::*;
 
-#[wasm_bindgen]
 
-pub fn resmi_olcekle(
-    data: &[u8],
-    btn: u8,
-    w: u32,       
-    h: u32,    
-    nw:u32,
-    nh:u32   
-) -> Vec<u8> {
+
+fn gri(data: &[u8], w: usize, h: usize)->Vec<u8>{
+    let mut gri_arr=vec![0; w * h];
+    for y in 0..h{
+        for x in 0..w {
+            let ind = (y*w+x)*4;
+            let r=data[ind]as f32;
+            let g=data[ind+1]as f32;
+            let b=data[ind+2]as f32;
+            let parlaklik = (0.299 * r + 0.587 * g + 0.114 * b) as u8;
+            gri_arr[y * w + x] = parlaklik;
+        }
+    }
+    return gri_arr;
+}
+#[wasm_bindgen]
+extern "C" {
+    // JavaScript'teki console.log'u Rust'a 'log' adıyla kopyalıyoruz
+    #[wasm_bindgen(js_namespace = console)]
+    fn log(s: &str);
+}
+#[wasm_bindgen]
+pub fn resmi_olcekle(data: &[u8], btn: u8, w: u32, h: u32, nw:u32, nh:u32) -> Vec<u8> {
     let mut sonuc = Vec::with_capacity((nw * nh* 4 ) as usize);
     if nw==w&&nh==h{
     for i in (0..sonuc.capacity()).step_by(4) {
@@ -79,6 +93,61 @@ pub fn resmi_olcekle(
         }
         
     }
-
     return sonuc;
+}
+
+
+#[wasm_bindgen]
+pub fn kenarlari_bul(data: &[u8], w: usize, h: usize) -> Vec<u8>{
+    let gri = gri(data, w, h);
+    let mut g_degerleri = vec![0.0; w * h];
+    
+    for y in 1..(h - 1) {
+        for x in 1..(w - 1) {
+            let mut gx: f32 = 0.0;
+            let mut gy: f32 = 0.0;
+            
+            for i in -1isize..=1 {
+                for j in -1isize..=1 {
+                    let komsu_y = (y as isize + i) as usize;
+                    let komsu_x = (x as isize + j) as usize;
+                    
+                    let idx = (komsu_y * w + komsu_x) ;
+                    let pixel = gri[idx] as f32;
+                    
+                    let x_katsayi = match (i, j) {//x için matris
+                        (-1, -1) => -1.0, (0, -1) => -2.0, (1, -1) => -1.0,
+                        (-1, 1) => 1.0,  (0, 1) => 2.0,   (1, 1) => 1.0,
+                        _ => 0.0
+                    };
+                    
+                    let y_katsayi = match (i, j) {//y için matris
+                        (-1, -1) => -1.0, (-1, 0) => -2.0, (-1, 1) => -1.0,
+                        (1, -1) => 1.0,  (1, 0) => 2.0,   (1, 1) => 1.0,
+                        _ => 0.0
+                    };
+                    
+                    gx += pixel * x_katsayi;
+                    gy += pixel * y_katsayi;     
+                }
+            }
+            
+            let g = (gx * gx + gy * gy).sqrt(); //hipotemus
+            g_degerleri[y * w + x] = g; 
+        }
+    }
+    
+  let mut gorsel_px=Vec::with_capacity(w * h *4);
+    for &g in g_degerleri.iter() {
+        
+        
+        let renk = if g > 255.0 { 255 } else { g as u8 };
+        
+        gorsel_px.push(renk); // Kırmızı
+        gorsel_px.push(renk); // Yeşil
+        gorsel_px.push(renk); // Mavi
+        gorsel_px.push(255);  // Alfa
+    }   
+    
+return gorsel_px;
 }

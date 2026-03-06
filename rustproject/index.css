@@ -8,4 +8,5 @@ justify-self: center;}
 .resim{   border: 1px solid #ccc ;}
 #buyutecCanvas{position: absolute;  pointer-events: none;display: none;
    height: 100px;width: 100px;border: 1px solid #ccc;}
+   .cerceve{display: none;border: 1px dotted #ccc;position: absolute;pointer-events: none;}
 .aktif{background-color: #ccc;}
