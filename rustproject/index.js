@@ -114,26 +114,32 @@ await init();
                 resmi_guncelle(ctx, canvas, sonucPixels, canvas.width*2, canvas.height*2);
             });
         btn5.addEventListener('click', () => {
+            canvas.addEventListener('mouseenter', function() {
+            btn = 5;
            canvas.width = image1.width;   // Örn: 1920 olur
              canvas.height = image1.height;
                  ctx.drawImage(image1, 0, 0, canvas.width, canvas.height);
              
                 const canvascoor = canvas.getBoundingClientRect();//coordinatları alıyo nası bilmiom
-                canvas.addEventListener('mouseenter', function() {
+                
                      buyutec.style.display = 'block';
-                });
-
-             canvas.addEventListener('mouseleave', function() {
-                  buyutec.style.display = 'none';
-                });
+               
                canvas.addEventListener('mousemove',function(e){
-                let farex=e.clientX-canvascoor.left;
-                let farey=e.clientY-canvascoor.top;
+                const rect = canvas.getBoundingClientRect();
+                const scaleX = canvas.width / rect.width;
+                const scaleY = canvas.height / rect.height;
+                let cssX = e.clientX - rect.left;
+                let cssY = e.clientY - rect.top;
+                let farex = cssX * scaleX;
+                let farey = cssY * scaleY;
                 buyutec.style.left = (e.pageX + 15) + 'px';
                 buyutec.style.top = (e.pageY - 55) + 'px';
-                buyutctx.drawImage(canvas,farex - 15,farey-25, 50, 50,0,0, buyutec.width, buyutec.height)
-               })
-              
+                buyutctx.drawImage(canvas,farex-10,farey-20, 50, 50,0,0, buyutec.width, buyutec.height)
+               })  
+               canvas.addEventListener('mouseleave', function() {
+                  buyutec.style.display = 'none';
+                });
+            });       
 });
     btn6.addEventListener('click', () => {
         inita();
@@ -201,6 +207,7 @@ await init();
     );
     ctx.putImageData(yeniImageData, 0, 0);
 }
+    
     baslat();
 
 });
