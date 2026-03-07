@@ -18,7 +18,7 @@ await init();
         const ctx = canvas.getContext('2d');
         
         const image1 = new Image();
-        image1.src = '/rustproject/resim/1.png';
+        image1.src = '/rustproject/resim/1.svg';
         image1.onload = () => {
             canvas.width = image1.width;   // Örn: 1920 olur
              canvas.height = image1.height;

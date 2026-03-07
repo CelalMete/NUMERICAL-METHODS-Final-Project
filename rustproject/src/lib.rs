@@ -111,27 +111,22 @@ pub fn kenarlari_bul(data: &[u8], w: usize, h: usize) -> Vec<u8>{
                 for j in -1isize..=1 {
                     let komsu_y = (y as isize + i) as usize;
                     let komsu_x = (x as isize + j) as usize;
-                    
                     let idx = (komsu_y * w + komsu_x) ;
                     let pixel = gri[idx] as f32;
-                    
                     let x_katsayi = match (i, j) {//x için matris
                         (-1, -1) => -1.0, (0, -1) => -2.0, (1, -1) => -1.0,
                         (-1, 1) => 1.0,  (0, 1) => 2.0,   (1, 1) => 1.0,
                         _ => 0.0
                     };
-                    
                     let y_katsayi = match (i, j) {//y için matris
                         (-1, -1) => -1.0, (-1, 0) => -2.0, (-1, 1) => -1.0,
                         (1, -1) => 1.0,  (1, 0) => 2.0,   (1, 1) => 1.0,
                         _ => 0.0
                     };
-                    
                     gx += pixel * x_katsayi;
                     gy += pixel * y_katsayi;     
                 }
             }
-            
             let g = (gx * gx + gy * gy).sqrt(); //hipotemus falan filan
             g_degerleri[y * w + x] = g; 
         }
@@ -154,10 +149,7 @@ pub fn kenarlari_bul(data: &[u8], w: usize, h: usize) -> Vec<u8>{
 
   let mut gorsel_px=Vec::with_capacity(w * h *4);
     for &g in g_degerleri.iter() {
-        
-        
         let renk = if g > ort { 0 } else { 255 };
-        
         gorsel_px.push(renk); // Kırmızı
         gorsel_px.push(renk); // Yeşil
         gorsel_px.push(renk); // Mavi
