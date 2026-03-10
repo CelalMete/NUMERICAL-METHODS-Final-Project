@@ -14,9 +14,14 @@ await init();
         const btn5 = document.getElementById('buyutec');
         const btn6 = document.getElementById('partikul');
         const btn7 = document.getElementById('kes');
-
+        const boya = document.getElementById('boya');
+        const renk =document.querySelectorAll('.color')
         const ctx = canvas.getContext('2d');
-        
+       renk.forEach(function(kutu){
+        let color = kutu.dataset.color;
+        kutu.style.backgroundColor = color;
+
+    })
         const image1 = new Image();
         image1.src = '/rustproject/resim/1.svg';
         image1.onload = () => {
@@ -24,8 +29,8 @@ await init();
              canvas.height = image1.height;
             console.log(canvas.width)
             console.log(canvas.height)
-             canvas.style.width = '670px';
-        canvas.style.height = '500px';
+             canvas.style.width = '54vw';
+        canvas.style.height = '60vh';
              ctx.drawImage(image1, 0, 0, canvas.width, canvas.height);
     const scanned = ctx.getImageData(0, 0, canvas.width, canvas.height);
     const hamVeri = scanned.data; // <-- Artık herkes bu veriye erişebilir!
@@ -194,7 +199,22 @@ await init();
         })
    
     });
-/////////////////////////
+    boya.addEventListener('click',()=>{
+        document.getElementById('boyacont').style.display='block';
+        let colorcode;
+        renk.forEach(kutu=>{ 
+            kutu.addEventListener('click',function(){
+            colorcode=this.dataset.color;
+            console.log(colorcode+'ss')
+        })
+        const renksecici = document.getElementById('renk-secici');
+            renksecici.addEventListener('input', function(e) {
+            let colorcode = e.target.value; 
+            console.log( colorcode);
+        });
+    })
+       
+    })
         };
     }
     function resmi_guncelle(ctx, canvas, pixelData, genislik, yukseklik) {
@@ -208,6 +228,8 @@ await init();
     ctx.putImageData(yeniImageData, 0, 0);
 }
     
+
+
     baslat();
 
 });

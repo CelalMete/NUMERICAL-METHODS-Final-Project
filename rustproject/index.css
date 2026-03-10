@@ -57,9 +57,13 @@ display: flex; flex-direction: row;}
    box-shadow:2px 0px  rgb(255, 14, 1);
 color: #FFF;font-family: 'pixel';display: flex;align-items: center;justify-content: center;}
 .toptxt{transform: skewX(30deg);}
-.cont{width: auto; height: auto; display: flex;flex-direction: column;
-margin-top: 70px;margin-left:100px ;}
-.cont2{width: auto;height: auto;}
+.cont{width: auto; height: auto; display: flex;flex-direction: row;
+margin-top: 10vh;margin-left:8vw;}
+.half{display: flex;flex-direction: column;}
+#right{ height: 500px; background-color: rgba(0, 0, 0, 0.6); margin-left: 5vw;
+width: 28vw; height: 75vh;}
+#cont2{width: auto;height: auto;}
+.paintTop{font-size: 28px;font-family: 'pixel',sans-serif;color: yellow;text-shadow: 1px 1px rgb(47, 0, 255);}
 .buttons{
    min-height:50px; max-height: 150px;display: flex;flex-direction: row;align-items: center;}
 .b{height: 30px;margin: 5px 0px 5px 10px;display: flex; align-items: center;transform: skewX(-15deg);
@@ -75,3 +79,6 @@ margin-top: 70px;margin-left:100px ;}
    .cerceve{display: none;border: 1px dotted #ccc;z-index: 1000;
       position: absolute;pointer-events: none;}
 .aktif{background-color: #ccc;}
+.precolors{width: 24vw; height: auto; display: grid;grid-template-columns:1fr 1fr 1fr 1fr;}
+.color , #renk-secici{margin: 1vh 1vw 1vh 1vw ; height: 4vh; width: 5vw; }
+#boyacont{display: none;}

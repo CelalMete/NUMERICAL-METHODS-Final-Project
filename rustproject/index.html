@@ -21,18 +21,37 @@
      </div>
     <div class="seperator"></div>
     <div class="cont">
+        <div class="half" id="left">
         <div id="cont2" class="cont2 buttons">
             <div class="b" id="orgin"><span>siyah beyaz</span> </div>
             <div class="b" id="zoom"><span>negatif</span></div>
             <div class="b" id="buyuk"><span>buyuk</span></div>
-            <div class="b" id="nokta"><span>orjinal</span></div>
+            <div class="b" id="nokta"><span>edge det.</span></div>
             <div class="b" id="buyutec"><span>buyutec</span></div>
+            <div class="b" id="boya"><span>Boya</span></div>
             <div class="b" id="partikul"><span>partikul</span></div>
             <div class="b" id="kes"><span>kirp</span></div>
         </div>
         <canvas class="cont2 resim" id="img1"></canvas>
         <div class="cerceve" id="cerceve"></div>
         <canvas id="buyutecCanvas" ></canvas>
+        </div>
+        <div class="half" id="right">
+    <div id="boyacont">
+            <div class="paintTop">Paint</div>
+            <div class="precolors">
+                <button class="color" id="siyah" data-color="#000000" ></button>
+                <button class="color" id="beyaz" data-color="#FFFFFF"></button>
+                <button class="color" id="kırmızı" data-color="#FF0000"></button>
+                <button class="color" id="mavi" data-color="#0000FF"></button>
+                <button class="color" id="yesil" data-color="#00FF00"></button>
+                <button class="color" id="sarı" data-color="#FFFF00"></button>
+                <button class="color" id="cyan" data-color="#00FFFF"></button>
+                <button class="color" id="pembe" data-color="#FF00FF"></button>
+            </div>
+            <input type="color" id="renk-secici" value="#00ff00">
+    </div>
+        </div>aa
         </div>
     </div>
     <script type="module" src="/rustproject/index.js"></script>
