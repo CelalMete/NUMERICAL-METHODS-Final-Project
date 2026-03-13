@@ -158,3 +158,29 @@ pub fn kenarlari_bul(data: &[u8], w: usize, h: usize) -> Vec<u8>{
     
 return gorsel_px;
 }
+
+#[wasm_bindgen]
+pub fn ciz(data:&mut [u8],w:u32,x:u32,y:u32,radius:u32,r:u8,g:u8,b:u8){
+    let genislik=w as i32;
+    let yukseklik=(data.len() as i32/4)/genislik;
+    let fx = x as i32;
+    let fy=y as i32;
+    let rad=radius as i32;
+    let miny=(fy-rad).max(0) ;
+    let maxy =(fy+rad).min(genislik-1);
+    let minx=(fx-rad).max(0);
+    let maxx=(fx-rad).min(genislik-1);
+     for ycor in miny..=maxy{
+        for xcor in minx..=maxx{
+            //yuvarlak sekil için
+            let dx=xcor-fx;
+            let dy=ycor-fy;
+            if dx*dx+dy*dy<=rad*rad{
+                let i = ((genislik*ycor+xcor)*4) as usize;
+                data[i]=r;
+                data[i+1]=g;
+                data[i+2]=b;
+            }
+        }
+     }
+}
