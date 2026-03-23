@@ -1,4 +1,4 @@
-import init, { resmi_olcekle,kenarlari_bul } from './pkg/rustproject.js';
+import init, { resmi_olcekle,kenarlari_bul,ciz } from './pkg/rustproject.js';
 
 document.addEventListener("DOMContentLoaded", () => {
     async function baslat() {
@@ -22,6 +22,39 @@ await init();
         kutu.style.backgroundColor = color;
 
     })
+    let isDrawing = false;
+let isErasing = false;
+    function getMousePos(e) {
+  const rect = canvas.getBoundingClientRect();
+  return {
+    x: e.clientX - rect.left,
+    y: e.clientY - rect.top
+  };
+}
+function startPosition(e) {
+  isDrawing = true;
+  draw(e); 
+}
+function endPosition() {
+  isDrawing = false;
+  ctx.beginPath(); 
+} 
+ function draw(e) {
+  if (!isDrawing) return;
+  const pos = getMousePos(e);
+  if (isErasing) {
+    ctx.globalCompositeOperation = 'destination-out'; 
+    ctx.lineWidth = 30; 
+  } else {
+    ctx.globalCompositeOperation = 'source-over'; 
+    ctx.lineWidth = 5; 
+    ctx.strokeStyle = 'red'; 
+  }
+  ctx.lineTo(pos.x, pos.y);
+  ctx.stroke();
+  ctx.beginPath();
+  ctx.moveTo(pos.x, pos.y);
+}
         const image1 = new Image();
         image1.src = '/rustproject/resim/1.svg';
         image1.onload = () => {
@@ -29,7 +62,7 @@ await init();
              canvas.height = image1.height;
             console.log(canvas.width)
             console.log(canvas.height)
-             canvas.style.width = '54vw';
+             canvas.style.width = '48vw';
         canvas.style.height = '60vh';
              ctx.drawImage(image1, 0, 0, canvas.width, canvas.height);
     const scanned = ctx.getImageData(0, 0, canvas.width, canvas.height);
@@ -163,6 +196,7 @@ await init();
             cerceve.style.display='block';
               x=e.pageX; y=e.pageY;
             cerceve.style.top=y+ 'px';
+            console.log(x)
             cerceve.style.left=x + 'px';
             cerceve.style.width = '0px';
             cerceve.style.height = '0px';
@@ -194,28 +228,29 @@ await init();
             if(!kirpma||!fare)return;
             let x2=a.pageX
             let y2=a.pageY;
+            
             cerceve.style.width=x2-x +'px';
             cerceve.style.height=y2-y +'px';
         })
-   
     });
-    boya.addEventListener('click',()=>{
+ 
+boya.addEventListener('click',()=>{
         document.getElementById('boyacont').style.display='block';
-        let colorcode;
-        renk.forEach(kutu=>{ 
-            kutu.addEventListener('click',function(){
-            colorcode=this.dataset.color;
-            console.log(colorcode+'ss')
-        })
-        const renksecici = document.getElementById('renk-secici');
-            renksecici.addEventListener('input', function(e) {
-            let colorcode = e.target.value; 
-            console.log( colorcode);
-        });
+        canvas.addEventListener('mousedown', startPosition);
+        canvas.addEventListener('mouseup', endPosition);
+        canvas.addEventListener('mousemove', draw);
+        canvas.addEventListener('mouseout', endPosition);
+console.log(isDrawing)
     })
-       
-    })
-        };
+
+document.getElementById('btnErase').addEventListener('click', () => {
+  isErasing = true;
+  isDrawing=false;
+  console.log(isErasing)
+});
+
+
+    };
     }
     function resmi_guncelle(ctx, canvas, pixelData, genislik, yukseklik) {
     canvas.width = genislik;
