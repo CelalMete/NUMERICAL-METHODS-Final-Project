@@ -32,15 +32,17 @@
             <div class="b" id="partikul"><span>partikul</span></div>
             <div class="b" id="kes"><span>kirp</span></div>
         </div>
+        
         <canvas class="cont2 resim" id="img1"></canvas>
+        <canvas id="ust" class="resim"></canvas>
         <div class="cerceve" id="cerceve"></div>
         <canvas id="buyutecCanvas" ></canvas>
-        <canvas id="ust"></canvas>
+        
         </div>
         <div class="half" id="right">
     <div id="boyacont">
             
-                <div class="paintmods" id="paintTop">Paint</div>
+            <div class="paintmods" id="paintTop">Paint</div>
                 
             <div class="precolors">
                 <button class="color" id="siyah" data-color="#000000" ></button>
@@ -55,8 +57,15 @@
             <input type="color" id="renk-secici" value="#00ff00">
             <div class="paintmods" id="eraseTop">Erase</div>
             <div id="btnErase">Silgi</div>
-    </div>
-        </div>aa
+            <div class="paintmods" id="sizeTop">Size</div>
+            <div class="sizecont">
+            <input id="size" class="size" type="range" min="0" max="100" step="1" value="50">
+                <div class="cember-kafesi">
+                <div id="sizenum"></div>
+            </div>
+            </div>
+        </div>  
+        </div>
         </div>
     </div>
     <script type="module" src="/rustproject/index.js"></script>

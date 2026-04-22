@@ -1,7 +1,39 @@
 use std::usize;
 
 use wasm_bindgen::prelude::*;
-
+fn sobelAlgorithm(data: &[u8], w: usize, h: usize)->Vec<f32>{
+let gri = gri(data, w, h);
+let mut g_degerleri = vec![0.0; w * h];
+    for y in 1..(h - 1) {
+        for x in 1..(w - 1) {
+            let mut gx: f32 = 0.0;
+            let mut gy: f32 = 0.0;
+            for i in -1isize..=1 {
+                for j in -1isize..=1 {
+                    let komsu_y = (y as isize + i) as usize;
+                    let komsu_x = (x as isize + j) as usize;
+                    let idx = (komsu_y * w + komsu_x);
+                    let pixel = gri[idx] as f32;
+                    let x_katsayi = match (i, j) {//x için matris
+                        (-1, -1) => -1.0, (0, -1) => -2.0, (1, -1) => -1.0,
+                        (-1, 1) => 1.0,  (0, 1) => 2.0,   (1, 1) => 1.0,
+                        _ => 0.0
+                    };
+                    let y_katsayi = match (i, j) {//y için matris
+                        (-1, -1) => -1.0, (-1, 0) => -2.0, (-1, 1) => -1.0,
+                        (1, -1) => 1.0,  (1, 0) => 2.0,   (1, 1) => 1.0,
+                        _ => 0.0
+                    };
+                    gx += pixel * x_katsayi;
+                    gy += pixel * y_katsayi;     
+                }
+            }
+            let g = (gx * gx + gy * gy).sqrt(); //hipotemus falan filan
+            g_degerleri[y * w + x] = g; 
+        }
+    }
+    return g_degerleri
+}
 
 
 fn gri(data: &[u8], w: usize, h: usize)->Vec<u8>{
@@ -18,6 +50,7 @@ fn gri(data: &[u8], w: usize, h: usize)->Vec<u8>{
     }
     return gri_arr;
 }
+
 #[wasm_bindgen]
 extern "C" {
     // JavaScript'teki console.log'u Rust'a 'log' adıyla kopyalıyoruz
@@ -97,41 +130,38 @@ pub fn resmi_olcekle(data: &[u8], btn: u8, w: u32, h: u32, nw:u32, nh:u32) -> Ve
 }
 
 
+
+#[wasm_bindgen]
+pub fn karakalem(data: &[u8], w: usize, h: usize) -> Vec<u8>{
+   let g_degerleri=sobelAlgorithm(data, w, h);
+    let mut b=0.0;
+   let mut arr = [0u32; 256]; 
+    for i in 0..g_degerleri.len() {
+        let mut g = g_degerleri[i];
+          if g > 255.0 {
+            g = 255.0;
+        }
+        b += g_degerleri[i];
+        let a = g as usize;
+        arr[a] += 1; 
+    }
+    
+    let sayi=g_degerleri.len() as f32;
+    let ort=b/sayi;
+  let mut gorsel_px=Vec::with_capacity(w * h *4);
+    for &g in g_degerleri.iter() {
+        let renk = g as u8;
+        gorsel_px.push(renk); // Kırmızı
+        gorsel_px.push(renk); // Yeşil
+        gorsel_px.push(renk); // Mavi
+        gorsel_px.push(255);  // Alfa
+    }   
+return gorsel_px;
+}
+
 #[wasm_bindgen]
 pub fn kenarlari_bul(data: &[u8], w: usize, h: usize) -> Vec<u8>{
-    let gri = gri(data, w, h);
-    let mut g_degerleri = vec![0.0; w * h];
-    
-    for y in 1..(h - 1) {
-        for x in 1..(w - 1) {
-            let mut gx: f32 = 0.0;
-            let mut gy: f32 = 0.0;
-            
-            for i in -1isize..=1 {
-                for j in -1isize..=1 {
-                    let komsu_y = (y as isize + i) as usize;
-                    let komsu_x = (x as isize + j) as usize;
-                    let idx = (komsu_y * w + komsu_x) ;
-                    let pixel = gri[idx] as f32;
-                    let x_katsayi = match (i, j) {//x için matris
-                        (-1, -1) => -1.0, (0, -1) => -2.0, (1, -1) => -1.0,
-                        (-1, 1) => 1.0,  (0, 1) => 2.0,   (1, 1) => 1.0,
-                        _ => 0.0
-                    };
-                    let y_katsayi = match (i, j) {//y için matris
-                        (-1, -1) => -1.0, (-1, 0) => -2.0, (-1, 1) => -1.0,
-                        (1, -1) => 1.0,  (1, 0) => 2.0,   (1, 1) => 1.0,
-                        _ => 0.0
-                    };
-                    gx += pixel * x_katsayi;
-                    gy += pixel * y_katsayi;     
-                }
-            }
-            let g = (gx * gx + gy * gy).sqrt(); //hipotemus falan filan
-            g_degerleri[y * w + x] = g; 
-        }
-    }
-   
+    let g_degerleri=sobelAlgorithm(data, w, h);
     let mut b=0.0;
    let mut arr = [0u32; 256]; 
     for i in 0..g_degerleri.len() {
@@ -145,8 +175,6 @@ pub fn kenarlari_bul(data: &[u8], w: usize, h: usize) -> Vec<u8>{
     }
     let sayi=g_degerleri.len() as f32;
     let ort=b/sayi;
-
-
   let mut gorsel_px=Vec::with_capacity(w * h *4);
     for &g in g_degerleri.iter() {
         let renk = if g > ort { 0 } else { 255 };

@@ -21,7 +21,7 @@ body:before {
     width: 100%;
     height: 100%;
     pointer-events: none;
-    z-index: 999;
+    z-index: 1;
     background-image: url(/rustproject/resim/overlay.png);
     background-repeat: all;
     background-position: 0px 0px;
@@ -39,7 +39,7 @@ body::after{
     width: 100%;
     height: 100%;
     pointer-events: none;
-    z-index: 999;
+    z-index: 1;
     background-image: url(/rustproject/resim/overlay2.png);
     background-repeat: all;
     background-position: 0px 0px;
@@ -48,6 +48,7 @@ body::after{
     animation-iteration-count: infinite;
     animation-timing-function: steps(4);
 }
+#ust{display:none;}
 .nav{height: 5vw;width: 100%;margin: 0;
 display: flex; flex-direction: row;}
 .logo{height: 100%;}
@@ -58,31 +59,42 @@ display: flex; flex-direction: row;}
 color: #FFF;font-family: 'pixel';display: flex;align-items: center;justify-content: center;}
 .toptxt{transform: skewX(30deg);}
 .cont{width: auto; height: auto; display: flex;flex-direction: row;
-margin-top: 10vh;margin-left:8vw;}
+margin-top: 10vh;margin-left:8vw; position: relative;}
 .half{display: flex;flex-direction: column;}
 #right{ height: 500px; background-color: rgba(0, 0, 0, 0.6); margin-left: 5vw;
 width: 28vw; height: 75vh;}
-#cont2{width: auto;height: auto;position: relative;}
+#cont2{width: auto;height: auto;}
 .painthead{display: flex;flex-direction: row; gap: 10px;}
 .paintmods{font-size: 28px;font-family: 'pixel',sans-serif;color: yellow;text-shadow: 1px 1px rgb(47, 0, 255);}
-.buttons{
-   min-height:50px; max-height: 150px;display: flex;flex-direction: row;align-items: center;}
+.buttons{min-height:50px; max-height: 150px;display: flex;flex-direction: row;align-items: center;}
 .b{height: 30px;margin: 5px 0px 5px 10px;display: flex; align-items: center;transform: skewX(-15deg);
    text-align: center;padding: 3px 10px 3px 10px; border: 1px solid #ccc;
-   background-color: black;z-index:1;
+   background-color: black;z-index:2;
 }
-#ust{}
+
 .seperator{width: 100%; height:28px;
    background-repeat: repeat-x; background-image: url(/rustproject/resim/seperate.png);}
-.resim{position: absolute; top: 0; left: 0;
-   z-index: 1;   border: 1px solid #FFF ;box-shadow: 6px 6px yellow}
+.resim{position: absolute; top: 50px; left: 0;
+   z-index:2;   border: 1px solid #FFF ;box-shadow: 6px 6px yellow}
 .b span{transform: skewX(15deg);font-family: 'pixel';font-size: 13px;color: #ccc;}
 #buyutecCanvas{position: absolute;  pointer-events: none;display: none;
-   height: 100px;width: 100px;border: 1px solid #ccc;z-index:1;}
-   .cerceve{display: none;border: 1px dotted #ccc;z-index: 1;
-      position: absolute;pointer-events: none;}
-.aktif{background-color: #ccc;}
+   height: 100px;width: 100px;border: 1px solid #ccc;z-index:2;}
+   .cerceve{display: none;border: 1px dotted #ccc;z-index: 2;
+      position: absolute;pointer-events: none;  }
 .precolors{width: 24vw; height: auto; display: grid;grid-template-columns:1fr 1fr 1fr 1fr;}
 .color , #renk-secici{margin: 1vh 1vw 1vh 1vw ; height: 4vh; width: 5vw; }
 #boyacont{display: none;}
 #btnErase{width: 5vw;height: 4vh;background-color: blue;}
+.size{-webkit-appearance: none; appearance: none;width: 60%; margin-top: 50px;
+  height: 8px; background: #e0e0e0; border-radius: 5px; outline: none; }
+  .sizecont{width: 100%;display: flex;flex-direction: row;}
+ #sizeTop{margin-top: 10px;}
+#sizenum{color: #e0e0e0;background-color: #e0e0e0;border-radius: 50%;}
+.cember-kafesi {
+  width: 100px; 
+  height: 100px;
+  display: flex;
+  justify-content: center; 
+  align-items: center;     
+ 
+}
