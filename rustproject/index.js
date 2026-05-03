@@ -1,4 +1,4 @@
-import init, { resmi_olcekle, kenarlari_bul ,karakalem } from './pkg/rustproject.js';
+import init, {k_means,gaussian_blur, resmi_olcekle, kenarlari_bul ,karakalem } from './pkg/rustproject.js';
 document.addEventListener("DOMContentLoaded", () => {
     async function baslat() {
         await init();
@@ -14,17 +14,27 @@ document.addEventListener("DOMContentLoaded", () => {
         const btn4 = document.getElementById('buyuk');
         const btn5 = document.getElementById('buyutec');
         const boyaBtn = document.getElementById('boya');
-        const btn7 = document.getElementById('kes');
+        const btn6 = document.getElementById('kes');
         const renkButonlari = document.querySelectorAll('.color');
         const renkSecici = document.getElementById('renk-secici');
         const silgiBtn = document.getElementById('btnErase');
         const size= document.getElementById('size')
         const ctx = canvas.getContext('2d');
+        const blur=document.getElementById('blur');
         let hamVeri;
         let isDrawing = false;
         let isErasing = false;
         let secilenRenk = '#ff0000';
+        let mod;
 
+        function katmanlariBirlestir() {
+        ctx.drawImage(ust, 0, 0);
+        const scanned = ctx.getImageData(0, 0, canvas.width, canvas.height);
+        hamVeri = scanned.data;
+        paintCtx.clearRect(0, 0, ust.width, ust.height);
+        ust.style.display='none';
+        document.getElementById('boyacont').style.display='none';
+        }
         renkButonlari.forEach(kutu => {
             let color = kutu.dataset.color;
             kutu.style.backgroundColor = color;
@@ -33,7 +43,6 @@ document.addEventListener("DOMContentLoaded", () => {
                 isErasing = false;
             });
         });
-
         renkSecici.addEventListener('input', (e) => {
             secilenRenk = e.target.value;
             console.log(secilenRenk)
@@ -45,21 +54,20 @@ document.addEventListener("DOMContentLoaded", () => {
         });
 
         const image1 = new Image();
-        image1.src = '/rustproject/resim/1.png';
+        image1.src = '/rustproject/resim/1.jpg';
         image1.onload = () => {
             canvas.width = image1.width;
             canvas.height = image1.height;
             ust.width = image1.width;
             ust.height = image1.height;
-            
             canvas.style.width = '48vw';
             canvas.style.height = '60vh';
             ust.style.width = '48vw';
             ust.style.height = '60vh';
-            
             ctx.drawImage(image1, 0, 0, canvas.width, canvas.height);
             const scanned = ctx.getImageData(0, 0, canvas.width, canvas.height);
             hamVeri = scanned.data;
+
         };
 
         function getMousePos(e, target) {
@@ -90,15 +98,14 @@ document.addEventListener("DOMContentLoaded", () => {
         function draw(e) {
             if (!isDrawing) return;
             const pos = getMousePos(e, ust);
-            console.log(isDrawing)
-            console.log(isErasing)
+         
             if (isErasing) {
                 paintCtx.globalCompositeOperation = 'destination-out';
                 paintCtx.lineWidth = 30;
                 
             } else {
                 paintCtx.globalCompositeOperation = 'source-over';
-                paintCtx.lineWidth = size.value/5;
+                paintCtx.lineWidth = size.value;
                 paintCtx.strokeStyle = secilenRenk;
             }
 
@@ -110,6 +117,8 @@ document.addEventListener("DOMContentLoaded", () => {
         }
 
         boyaBtn.addEventListener('click', () => {
+             mod=8;
+             console.log(mod)
             document.getElementById('boyacont').style.display='block';
             ust.style.display = 'block';
         });
@@ -119,31 +128,52 @@ document.addEventListener("DOMContentLoaded", () => {
         window.addEventListener('mouseup', endPosition);
 
         btn1.addEventListener('click', () => {
+            if(mod==8){
+                katmanlariBirlestir()
+            }
+        mod=1;
             let sonuc = resmi_olcekle(hamVeri, 1, canvas.width, canvas.height, canvas.width, canvas.height);
             resmi_guncelle(ctx, canvas, sonuc, canvas.width, canvas.height);
         });
 
         btn2.addEventListener('click', () => {
+            if(mod==8){
+                katmanlariBirlestir()
+            }
+            mod=2;
             let sonuc = resmi_olcekle(hamVeri, 2, canvas.width, canvas.height, canvas.width, canvas.height);
             resmi_guncelle(ctx, canvas, sonuc, canvas.width, canvas.height);
         });
 
         btn3.addEventListener('click', () => {
+            if(mod==8){
+                katmanlariBirlestir()
+            }
+            mod=3;
             let sonuc = karakalem(hamVeri, canvas.width, canvas.height);
             resmi_guncelle(ctx, canvas, sonuc, canvas.width, canvas.height);
         });
 
         btn4.addEventListener('click', () => {
+            if(mod==8){
+                katmanlariBirlestir()
+            }
+            mod=4;
             let sonuc = resmi_olcekle(hamVeri, 4, canvas.width, canvas.height, canvas.width * 2, canvas.height * 2);
             resmi_guncelle(ctx, canvas, sonuc, canvas.width * 2, canvas.height * 2);
         });
 
         btn5.addEventListener('click', () => {
+            if(mod==8){
+                katmanlariBirlestir()
+            }
+            mod=5;
+            const rect = canvas.getBoundingClientRect();
             canvas.addEventListener('mousemove', (e) => {
                 buyutec.style.display = 'block';
                 const pos = getMousePos(e, canvas);
-                buyutec.style.left = (e.pageX + 15) + 'px';
-                buyutec.style.top = (e.pageY - 55) + 'px';
+                buyutec.style.left = (e.clientX-rect.left + 15) + 'px';
+                buyutec.style.top = (e.clientY-rect.top - 55) + 'px';
                 buyutctx.clearRect(0, 0, buyutec.width, buyutec.height);
                 buyutctx.drawImage(canvas, pos.x - 25, pos.y - 25, 50, 50, 0, 0, buyutec.width, buyutec.height);
             });
@@ -151,53 +181,64 @@ document.addEventListener("DOMContentLoaded", () => {
                 buyutec.style.display = 'none';
             });
         });
-
         let kX, kY, kirpmaModu = false, fareBasili = false;
-
-        btn7.addEventListener('click', () => {
+        blur.addEventListener('click',()=>{
+            if(mod==8){
+                katmanlariBirlestir()
+            }
+            mod=9;
+            let sonuc = k_means(hamVeri, canvas.width, canvas.height);
+            resmi_guncelle(ctx, canvas, sonuc, canvas.width, canvas.height);
+        })
+        btn6.addEventListener('click', () => {
+            if(mod==8){
+                katmanlariBirlestir()
+            }
+            mod=6;
             kirpmaModu = true;
             ust.style.cursor = "crosshair";
+            console.log(kirpmaModu)
         });
-
-        ust.addEventListener('mousedown', (e) => {
+        canvas.addEventListener('mousedown', (e) => {
+            const rect = canvas.getBoundingClientRect();
             if (!kirpmaModu) return;
+            let topb=document.getElementById('cont2')
+            let toph=topb.offsetHeight;
+            console.log(kirpmaModu)
             fareBasili = true;
             kX = e.pageX;
             kY = e.pageY;
             cerceve.style.display = 'block';
-            cerceve.style.left = kX + 'px';
-            cerceve.style.top = kY + 'px';
+            cerceve.style.left = kX-rect.left + 'px';
+            cerceve.style.top = kY-rect.top+toph + 'px';
             cerceve.style.width = '0px';
             cerceve.style.height = '0px';
         });
 
-        window.addEventListener('mousemove', (e) => {
+        canvas.addEventListener('mousemove', (e) => {
             if (!kirpmaModu || !fareBasili) return;
-            cerceve.style.width = (e.pageX - kX) + 'px';
-            cerceve.style.height = (e.pageY - kY) + 'px';
+            cerceve.style.width = (e.clientX - kX) + 'px';
+            cerceve.style.height = (e.clientY - kY) + 'px';
         });
 
-        window.addEventListener('mouseup', (e) => {
+        canvas.addEventListener('mouseup', (e) => {
             if (!kirpmaModu || !fareBasili) return;
             fareBasili = false;
-            const rect = ust.getBoundingClientRect();
-            
+            const rect = canvas.getBoundingClientRect();
             let Genislik = parseInt(cerceve.style.width);
             let Yukseklik = parseInt(cerceve.style.height);
             let sX = (kX - (rect.left + window.scrollX)) * (ust.width / rect.width);
             let sY = (kY - (rect.top + window.scrollY)) * (ust.height / rect.height);
             let sW = Genislik * (ust.width / rect.width);
             let sH = Yukseklik * (ust.height / rect.height);
-
             ctx.clearRect(0, 0, canvas.width, canvas.height);
             ctx.drawImage(image1, sX, sY, sW, sH, 0, 0, canvas.width, canvas.height);
-            
             cerceve.style.display = 'none';
             kirpmaModu = false;
             ust.style.cursor = "default";
         });
     }
-
+   
     function resmi_guncelle(ctx, canvas, pixelData, genislik, yukseklik) {
         canvas.width = genislik;
         canvas.height = yukseklik;

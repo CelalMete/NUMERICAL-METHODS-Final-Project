@@ -1,6 +1,8 @@
-use std::usize;
+use std::{process::Output, usize};
 
 use wasm_bindgen::prelude::*;
+#[derive(Copy, Clone, Debug)]
+struct Centroid{r: f32,g: f32,b: f32}
 fn sobelAlgorithm(data: &[u8], w: usize, h: usize)->Vec<f32>{
 let gri = gri(data, w, h);
 let mut g_degerleri = vec![0.0; w * h];
@@ -34,8 +36,55 @@ let mut g_degerleri = vec![0.0; w * h];
     }
     return g_degerleri
 }
+fn karesini_alma(data: &[u8], merkezler: &mut [Centroid], w: usize, h: usize) -> Vec<u8> {
+    let mut sonuc = vec![0u8; w * h * 4];
+    for tur in 0..10 { // 0'dan 9'a kadar
+        let mut yeni_r_toplam = vec![0.0f32; 8];
+        let mut yeni_g_toplam = vec![0.0f32; 8];
+        let mut yeni_b_toplam = vec![0.0f32; 8];
+        let mut piksel_sayisi = vec![0u32; 8];
+        for y in 0..h {
+            for x in 0..w {
+                let ind = (y * w + x) * 4;
+                let r = data[ind] as f32;
+                let g = data[ind + 1] as f32;
+                let b = data[ind + 2] as f32;
 
+                let mut yakin = f32::MAX;
+                let mut yakinindex = 0;
+                for (i, cen) in merkezler.iter().enumerate() {
+                    let d = (cen.r - r).powi(2) + (cen.g - g).powi(2) + (cen.b - b).powi(2);
+                    if d < yakin {
+                        yakin = d;
+                        yakinindex = i; 
 
+                    }
+                }
+                if tur < 9 {
+                    yeni_r_toplam[yakinindex] += r;
+                    yeni_g_toplam[yakinindex] += g;
+                    yeni_b_toplam[yakinindex] += b;
+                    piksel_sayisi[yakinindex] += 1;
+                } else {
+                    sonuc[ind] = merkezler[yakinindex].r as u8;
+                    sonuc[ind + 1] = merkezler[yakinindex].g as u8;
+                    sonuc[ind + 2] = merkezler[yakinindex].b as u8;
+                    sonuc[ind + 3] = 255;
+                }
+            }
+        }
+        if tur < 9 {
+            for i in 0..8 {
+                if piksel_sayisi[i] > 0 {
+                    merkezler[i].r = yeni_r_toplam[i] / piksel_sayisi[i] as f32;
+                    merkezler[i].g = yeni_g_toplam[i] / piksel_sayisi[i] as f32;
+                    merkezler[i].b = yeni_b_toplam[i] / piksel_sayisi[i] as f32;
+                }
+            }
+        }
+    }
+    sonuc
+}
 fn gri(data: &[u8], w: usize, h: usize)->Vec<u8>{
     let mut gri_arr=vec![0; w * h];
     for y in 0..h{
@@ -84,7 +133,6 @@ pub fn resmi_olcekle(data: &[u8], btn: u8, w: u32, h: u32, nw:u32, nh:u32) -> Ve
             sonuc.push(a);        
             } 
         if btn==3{
-
             sonuc.push(data[i]);   
             sonuc.push(data[i+1]); 
             sonuc.push(data[i+2]); 
@@ -95,7 +143,6 @@ pub fn resmi_olcekle(data: &[u8], btn: u8, w: u32, h: u32, nw:u32, nh:u32) -> Ve
     }else{
         let x_ks = w as f32 / nw as f32;
         let y_ks = h as f32 / nh as f32;
-
         for y in 0..nh {
             for x in 0..nw {
                 let orgx = (x as f32 * x_ks).floor() as u32;
@@ -128,7 +175,6 @@ pub fn resmi_olcekle(data: &[u8], btn: u8, w: u32, h: u32, nw:u32, nh:u32) -> Ve
     }
     return sonuc;
 }
-
 
 
 #[wasm_bindgen]
@@ -186,3 +232,48 @@ pub fn kenarlari_bul(data: &[u8], w: usize, h: usize) -> Vec<u8>{
     
 return gorsel_px;
 }
+#[wasm_bindgen]
+pub fn gaussian_blur(data:&[u8],w:usize,h:usize)->Vec<u8>{
+    let mut sonuc =vec![0;w*h*4];
+    let kernel:[f32;9]=[
+        1.0/16.0, 2.0/16.0, 1.0/16.0,
+        2.0/16.0, 4.0/16.0, 2.0/16.0,
+        1.0/16.0, 2.0/16.0, 1.0/16.0,
+    ];
+    for y in 1..h-1{
+        for x in 1..w-1{
+            for c in 0..3{
+            let mut sum =0.0;//o pikselin değerleri
+                for i in -1isize..=1{
+                    for j in -1isize..=1{
+                    let idx=(((y as isize+1)as usize*w+(x as isize +j)as usize)*4)+c;
+                    let k_idx=((i+1)*3+(j+1))as usize;
+                    sum += data[idx] as f32 * kernel[k_idx];
+                }
+            }
+            sonuc[(y*w+x)*4+c]=sum as u8;
+        }
+        sonuc[(y*w+x)*4+3]=255;
+    }
+}
+    return sonuc;
+}
+#[wasm_bindgen]
+pub fn k_means(data:&[u8],w:usize,h:usize)->Vec<u8>{
+    let mut merkezler = vec![
+    Centroid { r: 0.0, g: 0.0, b: 0.0 },// siyah
+    Centroid { r: 255.0, g: 255.0, b: 255.0 },// beyaz
+    Centroid { r: 255.0, g: 0.0, b: 0.0 },//kırmızı
+    Centroid { r: 0.0, g: 255.0, b: 0.0 },//yesil
+    Centroid { r: 0.0, g: 0.0, b: 255.0 },//mavi
+    Centroid { r: 0.0, g: 255.0, b: 255.0 },//cyan
+    Centroid { r: 255.0, g: 0.0, b: 255.0 },//magenta
+    Centroid { r: 255.0, g: 255.0, b: 0.0 }//sarı
+];
+    let mut sonuc=karesini_alma(data,&mut merkezler, w, h);
+   
+    return sonuc;
+}
+
+#[wasm_bindgen]
+pub fn Color_Quantization(){}
