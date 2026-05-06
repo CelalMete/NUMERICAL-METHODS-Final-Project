@@ -100,6 +100,11 @@ fn gri(data: &[u8], w: usize, h: usize)->Vec<u8>{
     return gri_arr;
 }
 
+fn cubicColorization(data: &[u8], w: usize, h: usize)->Vec<u8>{
+ let mut sonuc = vec![0u8; w * h * 4];
+
+ return sonuc;
+}
 #[wasm_bindgen]
 extern "C" {
     // JavaScript'teki console.log'u Rust'a 'log' adıyla kopyalıyoruz
@@ -274,6 +279,9 @@ pub fn k_means(data:&[u8],w:usize,h:usize)->Vec<u8>{
    
     return sonuc;
 }
-
+//kmeans oto k belirleme ve oto başlangıç rengi belirleme eklenecek 
 #[wasm_bindgen]
-pub fn Color_Quantization(){}
+pub fn Color_Quantization(data:&[u8],w:usize,h:usize)->Vec<u8>{
+    let mut sonuc=cubicColorization(data, w, h);
+    return sonuc;//later
+}
