@@ -1,8 +1,25 @@
 use std::{process::Output, usize};
 
 use wasm_bindgen::prelude::*;
+
+
 #[derive(Copy, Clone, Debug)]
 struct Centroid{r: f32,g: f32,b: f32}
+fn merkes_sayı_bulma(data: &[u8],w:usize,h: usize){}
+
+use std::collections::HashMap;
+fn merkez_bulma(data: &[u8]) -> HashMap<u32, u32> {
+    let mut renk_sayaclari = HashMap::new();
+    for i in (0..data.len()).step_by(4) {
+        let r = data[i];
+        let g = data[i+1];
+        let b = data[i+2];
+        let rgb_paket = ((r as u32) << 16) | ((g as u32) << 8) | (b as u32);
+        let count = renk_sayaclari.entry(rgb_paket).or_insert(0);
+        *count += 1;
+    }
+    return renk_sayaclari;
+}
 fn sobelAlgorithm(data: &[u8], w: usize, h: usize)->Vec<f32>{
 let gri = gri(data, w, h);
 let mut g_degerleri = vec![0.0; w * h];

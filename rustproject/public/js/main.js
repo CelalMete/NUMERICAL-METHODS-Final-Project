@@ -1,5 +1,5 @@
-import init, {k_means,gaussian_blur, resmi_olcekle, kenarlari_bul ,karakalem } from './pkg/rustproject.js';
-document.addEventListener("DOMContentLoaded", () => {
+import init, {k_means,gaussian_blur, resmi_olcekle, kenarlari_bul ,karakalem } from '../../pkg/rustproject.js';
+ document.addEventListener("DOMContentLoaded", () => {
     async function baslat() {
         await init();
         const canvas = document.getElementById('img1');
